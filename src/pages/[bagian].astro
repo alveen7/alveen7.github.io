@@ -6,7 +6,7 @@ import { bagian } from '../bagian.js';
 
 export function getStaticPaths() {
   return bagian
-    .filter((b) => b.tampil && ['tentang', 'karya', 'investasi'].includes(b.slug))
+    .filter((b) => b.tampil && b.sementara)
     .map((b) => ({ params: { bagian: b.slug }, props: { nama: b.nama } }));
 }
 const { nama } = Astro.props;

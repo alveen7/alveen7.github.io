@@ -3,10 +3,11 @@
 // Di pratinjau lokal (npm run dev) semua bagian selalu terlihat, supaya bisa dikerjakan dulu.
 const daftar = [
   { slug: '', nama: 'Beranda', tampil: true },
-  { slug: 'tentang', nama: 'Tentang', tampil: false },
+  // `sementara: true` berarti bagian itu belum punya halaman sendiri dan memakai halaman sementara.
+  { slug: 'tentang', nama: 'Tentang', tampil: false, sementara: true },
   { slug: 'tulisan', nama: 'Tulisan', tampil: false },
-  { slug: 'karya', nama: 'Karya', tampil: false },
-  { slug: 'investasi', nama: 'Investasi', tampil: false },
+  { slug: 'karya', nama: 'Karya', tampil: false, sementara: true },
+  { slug: 'investasi', nama: 'Investasi', tampil: false, sementara: true },
 ];
 
 export const bagian = daftar.map((b) => ({ ...b, tampil: b.tampil || import.meta.env.DEV }));

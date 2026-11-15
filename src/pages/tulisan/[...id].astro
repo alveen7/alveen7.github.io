@@ -12,17 +12,18 @@ export async function getStaticPaths() {
   );
   return [
     { params: { id: undefined }, props: { daftar } },
-    ...daftar.map((t) => ({ params: { id: t.id }, props: { t } })),
+    ...daftar.map((tulisan) => ({ params: { id: tulisan.id }, props: { tulisan } })),
   ];
 }
-const { daftar, t } = Astro.props;
-const { Content } = t ? await render(t) : {};
-const tgl = (d) => d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+const { daftar, tulisan } = Astro.props;
+const { Content } = tulisan ? await render(tulisan) : {};
+const formatTanggal = (tanggal) =>
+  tanggal.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
-{t ? (
-  <Dasar judul={t.data.judul}>
+{tulisan ? (
+  <Dasar judul={tulisan.data.judul}>
     <article>
-      <h1>{t.data.judul}</h1>
+      <h1>{tulisan.data.judul}</h1>
       <Content />
     </article>
   </Dasar>
@@ -30,10 +31,10 @@ const tgl = (d) => d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long'
   <Dasar judul="Tulisan">
     <h1>Tulisan</h1>
     <ul>
-      {daftar.map((x) => (
+      {daftar.map((entri) => (
         <li>
-          <a href={`/tulisan/${x.id}/`}>{x.data.judul}</a>
-          <span> · {tgl(x.data.tanggal)} · {x.data.kategori}</span>
+          <a href={`/tulisan/${entri.id}/`}>{entri.data.judul}</a>
+          <span> · {formatTanggal(entri.data.tanggal)} · {entri.data.kategori}</span>
         </li>
       ))}
     </ul>
