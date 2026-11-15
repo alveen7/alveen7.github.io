@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import Dasar from '../../layouts/Dasar.astro';
+
+const daftar = (await getCollection('tulisan')).sort(
+  (a, b) => b.data.tanggal.valueOf() - a.data.tanggal.valueOf(),
+);
+const tgl = (d) => d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Dasar judul="Tulisan">
+  <h1>Tulisan</h1>
+  <ul>
+    {daftar.map((t) => (
+      <li>
+        <a href={`/tulisan/${t.id}/`}>{t.data.judul}</a>
+        <span> · {tgl(t.data.tanggal)} · {t.data.kategori}</span>
+      </li>
+    ))}
+  </ul>
+</Dasar>

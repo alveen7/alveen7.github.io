@@ -1,0 +1,16 @@
+---
+import { getCollection, render } from 'astro:content';
+import Dasar from '../../layouts/Dasar.astro';
+
+export async function getStaticPaths() {
+  return (await getCollection('tulisan')).map((t) => ({ params: { id: t.id }, props: { t } }));
+}
+const { t } = Astro.props;
+const { Content } = await render(t);
+---
+<Dasar judul={t.data.judul}>
+  <article>
+    <h1>{t.data.judul}</h1>
+    <Content />
+  </article>
+</Dasar>

@@ -1,0 +1,23 @@
+---
+import { bagian } from '../bagian.js';
+const { judul } = Astro.props;
+---
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{judul}</title>
+  </head>
+  <body>
+    <nav aria-label="Utama">
+      <ul>
+        {bagian.filter((b) => b.tampil).map((b) => (
+          <li><a href={b.slug ? `/${b.slug}/` : '/'}>{b.nama}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
