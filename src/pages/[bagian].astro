@@ -1,17 +1,19 @@
 ---
 // Halaman sementara untuk bagian yang belum punya isi sendiri.
-// Bagian dengan `tampil: false` tidak dibangun sama sekali.
+// Bagian dengan `tampil: false` tidak dibangun sama sekali. Beranda (slug kosong) punya file sendiri.
 import Dasar from '../layouts/Dasar.astro';
 import { bagian } from '../bagian.js';
 
 export function getStaticPaths() {
   return bagian
-    .filter((b) => b.tampil && b.sementara)
+    .filter((b) => b.slug && b.tampil && b.sementara)
     .map((b) => ({ params: { bagian: b.slug }, props: { nama: b.nama } }));
 }
 const { nama } = Astro.props;
 ---
 <Dasar judul={nama}>
-  <h1>{nama}</h1>
-  <p>Isi contoh. Bagian ini belum diisi.</p>
+  <div class="kepala"><h1>{nama}</h1></div>
+  <div class="dua">
+    <div class="isi"><p>Isi contoh. Bagian ini belum diisi.</p></div>
+  </div>
 </Dasar>

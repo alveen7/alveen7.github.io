@@ -3,7 +3,8 @@
 // Kalau bagian Tulisan belum tayang, tidak ada halaman yang dibangun.
 import { getCollection, render } from 'astro:content';
 import Dasar from '../../layouts/Dasar.astro';
-import { tampil } from '../../bagian.js';
+import Ubin from '../../components/Ubin.astro';
+import { tampil, ikuti } from '../../bagian.js';
 
 export async function getStaticPaths() {
   if (!tampil('tulisan')) return [];
@@ -12,31 +13,62 @@ export async function getStaticPaths() {
   );
   return [
     { params: { id: undefined }, props: { daftar } },
-    ...daftar.map((tulisan) => ({ params: { id: tulisan.id }, props: { tulisan } })),
+    ...daftar.map((tulisan) => ({ params: { id: tulisan.id }, props: { daftar, tulisan } })),
   ];
 }
 const { daftar, tulisan } = Astro.props;
-const { Content } = tulisan ? await render(tulisan) : {};
+const { Content, headings = [] } = tulisan ? await render(tulisan) : {};
+// Daftar isi diambil dari subjudul (##) di file markdown.
+const daftarIsi = headings.filter((h) => h.depth === 2);
+const lain = daftar.filter((entri) => entri.id !== tulisan?.id).slice(0, 3);
 const formatTanggal = (tanggal) =>
   tanggal.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 {tulisan ? (
   <Dasar judul={tulisan.data.judul}>
     <article>
-      <h1>{tulisan.data.judul}</h1>
-      <Content />
+      <div class="kepala">
+        <p class="label"><a href="/tulisan/">Tulisan</a><span>{tulisan.data.kategori}</span></p>
+        <h1>{tulisan.data.judul}</h1>
+        <p class="penulis">
+          <span class="foto"></span>Alvin
+          <time datetime={tulisan.data.tanggal.toISOString().slice(0, 10)}>{formatTanggal(tulisan.data.tanggal)}</time>
+        </p>
+      </div>
+      <div class="dua">
+        <div class="isi"><Content /></div>
+        {(daftarIsi.length > 0 || ikuti.length > 0) && (
+          <aside>
+            {daftarIsi.length > 0 && (
+              <nav class="kotak" aria-label="Daftar isi">
+                <h2>Di tulisan ini</h2>
+                <ol>
+                  {daftarIsi.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+                </ol>
+              </nav>
+            )}
+            {ikuti.length > 0 && (
+              <div class="kotak warna">
+                <h2>Ikuti tulisan harian saya</h2>
+                {ikuti.map((s, i) => <a class:list={['pil', { polos: i > 0 }]} href={s.href}>{s.nama}</a>)}
+              </div>
+            )}
+          </aside>
+        )}
+      </div>
     </article>
+    {lain.length > 0 && (
+      <section class="pita abu">
+        <h2>Tulisan lain</h2>
+        <Ubin daftar={lain} />
+      </section>
+    )}
   </Dasar>
 ) : (
   <Dasar judul="Tulisan">
-    <h1>Tulisan</h1>
-    <ul>
-      {daftar.map((entri) => (
-        <li>
-          <a href={`/tulisan/${entri.id}/`}>{entri.data.judul}</a>
-          <span> · {formatTanggal(entri.data.tanggal)} · {entri.data.kategori}</span>
-        </li>
-      ))}
-    </ul>
+    <div class="kepala"><h1>Tulisan</h1></div>
+    <section class="pita">
+      <Ubin daftar={daftar} />
+    </section>
   </Dasar>
 )}

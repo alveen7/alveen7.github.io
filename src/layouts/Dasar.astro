@@ -1,23 +1,33 @@
 ---
-import { bagian } from '../bagian.js';
+import '../gaya.css';
+import { bagian, ikuti } from '../bagian.js';
 const { judul } = Astro.props;
+const jalur = Astro.url.pathname;
+const aktif = (slug) => (slug ? jalur.startsWith(`/${slug}/`) : jalur === '/');
 ---
 <html lang="id">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{judul}</title>
   </head>
   <body>
-    <nav aria-label="Utama">
-      <ul>
+    <a class="lompat" href="#isi">Langsung ke isi</a>
+    <header class="atas">
+      <a class="nama" href="/">Alvin</a>
+      <nav aria-label="Utama">
         {bagian.filter((b) => b.tampil).map((b) => (
-          <li><a href={b.slug ? `/${b.slug}/` : '/'}>{b.nama}</a></li>
+          <a href={b.slug ? `/${b.slug}/` : '/'} aria-current={aktif(b.slug) ? 'page' : undefined}>{b.nama}</a>
         ))}
-      </ul>
-    </nav>
-    <main>
+      </nav>
+      {ikuti[0] && <a class="pil" href={ikuti[0].href}>Ikuti di {ikuti[0].nama}</a>}
+    </header>
+    <main id="isi">
       <slot />
     </main>
+    <footer>
+      <p>Alvin{ikuti.map((s) => <> · <a href={s.href}>{s.nama}</a></>)}</p>
+    </footer>
   </body>
 </html>

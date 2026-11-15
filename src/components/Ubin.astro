@@ -1,0 +1,15 @@
+---
+// Kisi kartu tulisan: kategori, judul, tanggal. Dipakai di Beranda, daftar, dan "Tulisan lain".
+const { daftar } = Astro.props;
+const formatTanggal = (tanggal) =>
+  tanggal.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<div class="ubin">
+  {daftar.map((entri) => (
+    <a href={`/tulisan/${entri.id}/`}>
+      <small>{entri.data.kategori}</small>
+      <h3>{entri.data.judul}</h3>
+      <time datetime={entri.data.tanggal.toISOString().slice(0, 10)}>{formatTanggal(entri.data.tanggal)}</time>
+    </a>
+  ))}
+</div>
