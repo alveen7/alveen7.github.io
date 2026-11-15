@@ -1,0 +1,41 @@
+---
+// Satu file untuk daftar tulisan (/tulisan/) dan tiap halaman tulisan (/tulisan/<nama-file>/).
+// Kalau bagian Tulisan belum tayang, tidak ada halaman yang dibangun.
+import { getCollection, render } from 'astro:content';
+import Dasar from '../../layouts/Dasar.astro';
+import { tampil } from '../../bagian.js';
+
+export async function getStaticPaths() {
+  if (!tampil('tulisan')) return [];
+  const daftar = (await getCollection('tulisan')).sort(
+    (a, b) => b.data.tanggal.valueOf() - a.data.tanggal.valueOf(),
+  );
+  return [
+    { params: { id: undefined }, props: { daftar } },
+    ...daftar.map((t) => ({ params: { id: t.id }, props: { t } })),
+  ];
+}
+const { daftar, t } = Astro.props;
+const { Content } = t ? await render(t) : {};
+const tgl = (d) => d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+{t ? (
+  <Dasar judul={t.data.judul}>
+    <article>
+      <h1>{t.data.judul}</h1>
+      <Content />
+    </article>
+  </Dasar>
+) : (
+  <Dasar judul="Tulisan">
+    <h1>Tulisan</h1>
+    <ul>
+      {daftar.map((x) => (
+        <li>
+          <a href={`/tulisan/${x.id}/`}>{x.data.judul}</a>
+          <span> · {tgl(x.data.tanggal)} · {x.data.kategori}</span>
+        </li>
+      ))}
+    </ul>
+  </Dasar>
+)}
