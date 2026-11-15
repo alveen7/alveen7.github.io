@@ -18,8 +18,8 @@ export const tampil = (slug) => bagian.some((b) => b.slug === slug && b.tampil);
 // Tautan sosmed. Isi `href` dengan alamat profil. Selama kosong, tombolnya tidak tayang di
 // website publik; di pratinjau lokal tombol tetap terlihat supaya tampilan bisa dinilai.
 export const ikuti = [
-  { nama: 'Threads', href: '' },
-  { nama: 'Instagram', href: '' },
+  { nama: 'Threads', href: 'https://www.threads.com/@alveen7' },
+  { nama: 'Instagram', href: 'https://www.instagram.com/alveen7/' },
 ]
   .filter((s) => s.href || import.meta.env.DEV)
   .map((s) => ({ ...s, href: s.href || '#' }));
